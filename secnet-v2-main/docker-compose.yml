@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  suricata:
+    build: ./suricata
+    container_name: suricata
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - ./suricata/suricata.yaml:/etc/suricata/suricata.yaml:ro
+      - ./suricata/rules/local.rules:/etc/suricata/rules/local.rules:ro
+      - ./logs:/var/log/suricata
+      - /etc/localtime:/etc/localtime:ro
+    command: ["/usr/bin/suricata", "-c", "/etc/suricata/suricata.yaml", "-i", "eth0"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "suricata"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+  python-responder:
+    build:
+      context: ./python-responder
+      dockerfile: Dockerfile
+    container_name: python-responder
+    restart: unless-stopped
+    network_mode: host
+    privileged: true
+    user: root
+    tmpfs:
+      - /run
+      - /run/lock
+    security_opt:
+      - apparmor:unconfined
+      - seccomp=unconfined
+    working_dir: /app
+    command: ["/bin/sh", "-c", "chown -R 1000:1000 /app/database && /app/startup.sh"]
+    depends_on:
+      suricata:
+        condition: service_healthy
+    volumes:
+      - ./logs:/var/log/suricata:ro
+      - ./python-responder:/app
+      - ./database:/app/database
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/iptables:/etc/iptables:rw
+      - /etc/localtime:/etc/localtime:ro
+      - /lib/modules:/lib/modules:ro
+    environment:
+      - DEBUG=${DEBUG:-0}
+      - TZ=${TZ:-UTC}
+      - LANG=C.UTF-8
+      - PYTHONUNBUFFERED=1
+      - IPTABLES_SAVE_ON_STOP=1
+      - IPTABLES_SAVE_ON_RESTART=1
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "python responder.py"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  web-interface:
+    build: ./web-interface
+    container_name: web-interface
+    networks:
+      - incident-network
+    ports:
+      - "8080:80"
+    volumes:
+      # Código PHP de la interfaz
+      - ./web-interface:/var/www/html
+      # BD para que la web lea alertas
+      - ./database:/var/www/html/database
+      # Acceso a logs (opcional, p.ej. para descargas)
+      - ./logs:/var/www/html/logs:ro
+    depends_on:
+      - suricata
+      - python-responder
+    restart: unless-stopped
+
+networks:
+  incident-network:
+    driver: bridge
