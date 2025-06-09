@@ -10,6 +10,11 @@ SecNet permite detectar tráfico malicioso en tiempo real utilizando **Suricata*
 
 ---
 
+![Captura de pantalla 2025-06-07 102039](https://github.com/user-attachments/assets/6916ddce-7a1e-4c9d-b266-9e139544efc1)
+![Captura de pantalla 2025-06-07 102156](https://github.com/user-attachments/assets/6411225b-4565-43da-a42f-05c79157a3d8)
+
+---
+
 ## ⚙️ Arquitectura del Proyecto
 
 - 📁 **suricata/**: Configuración y reglas IPS/IDS personalizadas
