@@ -1,0 +1,489 @@
+2025-06-09 08:12:21,336 - responder - INFO - Base de datos inicializada en /app/database/alerts.db
+2025-06-09 08:12:21,337 - responder - INFO - Iniciando monitoreo de eventos nuevos (desde 2025-06-09T08:12:21.337260)
+2025-06-09 08:12:21,337 - responder - INFO - Monitoreando archivo: /var/log/suricata/eve.json
+2025-06-09 08:12:21,337 - responder - INFO - Posición inicial del archivo: 11059518
+2025-06-09 08:12:21,340 - responder - INFO - Observer iniciado: vigilando /var/log/suricata/eve.json
+2025-06-09 08:12:21,341 - responder - INFO - Servidor Flask iniciado en el puerto 5000
+2025-06-09 08:12:21,365 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-06-09 08:12:21,365 - werkzeug - INFO -  * Running on http://192.168.56.7:5000/ (Press CTRL+C to quit)
+2025-06-09 08:14:54,437 - responder - INFO - Base de datos inicializada en /app/database/alerts.db
+2025-06-09 08:14:54,439 - responder - INFO - Iniciando monitoreo de eventos nuevos (desde 2025-06-09T08:14:54.439288)
+2025-06-09 08:14:54,439 - responder - INFO - Monitoreando archivo: /var/log/suricata/eve.json
+2025-06-09 08:14:54,441 - responder - INFO - Posición inicial del archivo: 0
+2025-06-09 08:14:54,452 - responder - INFO - Observer iniciado: vigilando /var/log/suricata/eve.json
+2025-06-09 08:14:54,458 - responder - INFO - Servidor Flask iniciado en el puerto 5000
+2025-06-09 08:14:54,477 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-06-09 08:14:54,479 - werkzeug - INFO -  * Running on http://192.168.56.7:5000/ (Press CTRL+C to quit)
+2025-06-09 08:15:40,112 - responder - INFO - Archivo modificado: /var/log/suricata/eve.json
+2025-06-09 08:15:40,142 - responder - INFO - Procesando nueva alerta: SSH Brute Force Attempt
+2025-06-09 08:15:40,145 - responder - INFO - Procesando alerta: {
+  "timestamp": "2025-06-09T08:15:40.084459+0200",
+  "flow_id": 1207175158596705,
+  "in_iface": "eth0",
+  "event_type": "alert",
+  "src_ip": "192.168.56.5",
+  "src_port": 48228,
+  "dest_ip": "192.168.56.7",
+  "dest_port": 22,
+  "proto": "TCP",
+  "pkt_src": "wire/pcap",
+  "alert": {
+    "action": "allowed",
+    "gid": 1,
+    "signature_id": 1000001,
+    "rev": 2,
+    "signature": "SSH Brute Force Attempt",
+    "category": "Attempted Administrator Privilege Gain",
+    "severity": 3
+  },
+  "direction": "to_server",
+  "flow": {
+    "pkts_toserver": 1,
+    "pkts_toclient": 0,
+    "bytes_toserver": 60,
+    "bytes_toclient": 0,
+    "start": "2025-06-09T08:15:40.084459+0200",
+    "src_ip": "192.168.56.5",
+    "dest_ip": "192.168.56.7",
+    "src_port": 48228,
+    "dest_port": 22
+  }
+}
+2025-06-09 08:15:40,145 - responder - INFO - IP 192.168.56.5 marcada para bloqueo por actividad maliciosa: SSH Brute Force Attempt (Severidad: 3)
+2025-06-09 08:15:40,146 - responder - INFO - Evaluando bloqueo para 192.168.56.5: categoria=Intento de fuerza bruta SSH, gravedad=3, should_block=True
+2025-06-09 08:15:40,162 - responder - INFO - La IP 192.168.56.5 ya estaba bloqueada en iptables
+2025-06-09 08:15:40,246 - responder - INFO - Alerta guardada en la base de datos: 285
+2025-06-09 08:15:40,296 - responder - INFO - Alerta procesada: SSH Brute Force Attempt | Src: 192.168.56.5 | Dest: 192.168.56.7 | Severidad: 3 | Acción: IP ya bloqueada: 192.168.56.5
+2025-06-09 08:16:43,665 - responder - INFO - Archivo modificado: /var/log/suricata/eve.json
+2025-06-09 08:16:43,669 - responder - INFO - Procesando nueva alerta: ICMP Ping
+2025-06-09 08:16:43,673 - responder - INFO - Procesando alerta: {
+  "timestamp": "2025-06-09T08:16:43.645453+0200",
+  "flow_id": 759028445753503,
+  "in_iface": "eth0",
+  "event_type": "alert",
+  "src_ip": "192.168.56.5",
+  "dest_ip": "192.168.56.7",
+  "proto": "ICMP",
+  "icmp_type": 8,
+  "icmp_code": 0,
+  "pkt_src": "wire/pcap",
+  "alert": {
+    "action": "allowed",
+    "gid": 1,
+    "signature_id": 1000009,
+    "rev": 2,
+    "signature": "ICMP Ping",
+    "category": "Detection of a Network Scan",
+    "severity": 1
+  },
+  "direction": "to_server",
+  "flow": {
+    "pkts_toserver": 2,
+    "pkts_toclient": 0,
+    "bytes_toserver": 196,
+    "bytes_toclient": 0,
+    "start": "2025-06-09T08:16:42.635477+0200",
+    "src_ip": "192.168.56.5",
+    "dest_ip": "192.168.56.7"
+  }
+}
+2025-06-09 08:16:43,676 - responder - INFO - IP 192.168.56.5 marcada para bloqueo por actividad maliciosa: ICMP Ping (Severidad: 1)
+2025-06-09 08:16:43,676 - responder - INFO - Evaluando bloqueo para 192.168.56.5: categoria=Ping ICMP detectado, gravedad=1, should_block=True
+2025-06-09 08:16:43,701 - responder - INFO - La IP 192.168.56.5 ya estaba bloqueada en iptables
+2025-06-09 08:16:43,779 - responder - INFO - Alerta guardada en la base de datos: 286
+2025-06-09 08:16:43,804 - responder - INFO - Alerta procesada: ICMP Ping | Src: 192.168.56.5 | Dest: 192.168.56.7 | Severidad: 1 | Acción: IP ya bloqueada: 192.168.56.5
+2025-06-09 08:16:44,678 - responder - INFO - Archivo modificado: /var/log/suricata/eve.json
+2025-06-09 08:16:44,681 - responder - INFO - Procesando nueva alerta: ICMP Ping
+2025-06-09 08:16:44,685 - responder - INFO - Procesando alerta: {
+  "timestamp": "2025-06-09T08:16:44.669683+0200",
+  "flow_id": 759028445753503,
+  "in_iface": "eth0",
+  "event_type": "alert",
+  "src_ip": "192.168.56.5",
+  "dest_ip": "192.168.56.7",
+  "proto": "ICMP",
+  "icmp_type": 8,
+  "icmp_code": 0,
+  "pkt_src": "wire/pcap",
+  "alert": {
+    "action": "allowed",
+    "gid": 1,
+    "signature_id": 1000009,
+    "rev": 2,
+    "signature": "ICMP Ping",
+    "category": "Detection of a Network Scan",
+    "severity": 1
+  },
+  "direction": "to_server",
+  "flow": {
+    "pkts_toserver": 3,
+    "pkts_toclient": 0,
+    "bytes_toserver": 294,
+    "bytes_toclient": 0,
+    "start": "2025-06-09T08:16:42.635477+0200",
+    "src_ip": "192.168.56.5",
+    "dest_ip": "192.168.56.7"
+  }
+}
+2025-06-09 08:16:44,689 - responder - INFO - IP 192.168.56.5 marcada para bloqueo por actividad maliciosa: ICMP Ping (Severidad: 1)
+2025-06-09 08:16:44,695 - responder - INFO - Evaluando bloqueo para 192.168.56.5: categoria=Ping ICMP detectado, gravedad=1, should_block=True
+2025-06-09 08:16:44,718 - responder - INFO - La IP 192.168.56.5 ya estaba bloqueada en iptables
+2025-06-09 08:16:44,842 - responder - INFO - Alerta guardada en la base de datos: 287
+2025-06-09 08:16:44,862 - responder - INFO - Alerta procesada: ICMP Ping | Src: 192.168.56.5 | Dest: 192.168.56.7 | Severidad: 1 | Acción: IP ya bloqueada: 192.168.56.5
+2025-06-09 08:16:45,703 - responder - INFO - Archivo modificado: /var/log/suricata/eve.json
+2025-06-09 08:16:45,705 - responder - INFO - Procesando nueva alerta: ICMP Ping
+2025-06-09 08:16:45,706 - responder - INFO - Procesando alerta: {
+  "timestamp": "2025-06-09T08:16:45.694476+0200",
+  "flow_id": 759028445753503,
+  "in_iface": "eth0",
+  "event_type": "alert",
+  "src_ip": "192.168.56.5",
+  "dest_ip": "192.168.56.7",
+  "proto": "ICMP",
+  "icmp_type": 8,
+  "icmp_code": 0,
+  "pkt_src": "wire/pcap",
+  "alert": {
+    "action": "allowed",
+    "gid": 1,
+    "signature_id": 1000009,
+    "rev": 2,
+    "signature": "ICMP Ping",
+    "category": "Detection of a Network Scan",
+    "severity": 1
+  },
+  "direction": "to_server",
+  "flow": {
+    "pkts_toserver": 4,
+    "pkts_toclient": 0,
+    "bytes_toserver": 392,
+    "bytes_toclient": 0,
+    "start": "2025-06-09T08:16:42.635477+0200",
+    "src_ip": "192.168.56.5",
+    "dest_ip": "192.168.56.7"
+  }
+}
+2025-06-09 08:16:45,706 - responder - INFO - IP 192.168.56.5 marcada para bloqueo por actividad maliciosa: ICMP Ping (Severidad: 1)
+2025-06-09 08:16:45,706 - responder - INFO - Evaluando bloqueo para 192.168.56.5: categoria=Ping ICMP detectado, gravedad=1, should_block=True
+2025-06-09 08:16:45,746 - responder - INFO - La IP 192.168.56.5 ya estaba bloqueada en iptables
+2025-06-09 08:16:45,836 - responder - INFO - Alerta guardada en la base de datos: 288
+2025-06-09 08:16:45,876 - responder - INFO - Alerta procesada: ICMP Ping | Src: 192.168.56.5 | Dest: 192.168.56.7 | Severidad: 1 | Acción: IP ya bloqueada: 192.168.56.5
+2025-06-09 08:16:46,725 - responder - INFO - Archivo modificado: /var/log/suricata/eve.json
+2025-06-09 08:16:46,726 - responder - INFO - Procesando nueva alerta: ICMP Ping
+2025-06-09 08:16:46,726 - responder - INFO - Procesando alerta: {
+  "timestamp": "2025-06-09T08:16:46.715957+0200",
+  "flow_id": 759028445753503,
+  "in_iface": "eth0",
+  "event_type": "alert",
+  "src_ip": "192.168.56.5",
+  "dest_ip": "192.168.56.7",
+  "proto": "ICMP",
+  "icmp_type": 8,
+  "icmp_code": 0,
+  "pkt_src": "wire/pcap",
+  "alert": {
+    "action": "allowed",
+    "gid": 1,
+    "signature_id": 1000009,
+    "rev": 2,
+    "signature": "ICMP Ping",
+    "category": "Detection of a Network Scan",
+    "severity": 1
+  },
+  "direction": "to_server",
+  "flow": {
+    "pkts_toserver": 5,
+    "pkts_toclient": 0,
+    "bytes_toserver": 490,
+    "bytes_toclient": 0,
+    "start": "2025-06-09T08:16:42.635477+0200",
+    "src_ip": "192.168.56.5",
+    "dest_ip": "192.168.56.7"
+  }
+}
+2025-06-09 08:16:46,726 - responder - INFO - IP 192.168.56.5 marcada para bloqueo por actividad maliciosa: ICMP Ping (Severidad: 1)
+2025-06-09 08:16:46,727 - responder - INFO - Evaluando bloqueo para 192.168.56.5: categoria=Ping ICMP detectado, gravedad=1, should_block=True
+2025-06-09 08:16:46,770 - responder - INFO - La IP 192.168.56.5 ya estaba bloqueada en iptables
+2025-06-09 08:16:46,895 - responder - INFO - Alerta guardada en la base de datos: 289
+2025-06-09 08:16:46,919 - responder - INFO - Alerta procesada: ICMP Ping | Src: 192.168.56.5 | Dest: 192.168.56.7 | Severidad: 1 | Acción: IP ya bloqueada: 192.168.56.5
+2025-06-09 08:18:51,716 - responder - INFO - Archivo modificado: /var/log/suricata/eve.json
+2025-06-09 08:18:51,721 - responder - INFO - Procesando nueva alerta: ICMP Ping
+2025-06-09 08:18:51,721 - responder - INFO - Procesando alerta: {
+  "timestamp": "2025-06-09T08:18:51.697003+0200",
+  "flow_id": 1023280603607199,
+  "in_iface": "eth0",
+  "event_type": "alert",
+  "src_ip": "192.168.56.5",
+  "dest_ip": "192.168.56.7",
+  "proto": "ICMP",
+  "icmp_type": 8,
+  "icmp_code": 0,
+  "pkt_src": "wire/pcap",
+  "alert": {
+    "action": "allowed",
+    "gid": 1,
+    "signature_id": 1000009,
+    "rev": 2,
+    "signature": "ICMP Ping",
+    "category": "Detection of a Network Scan",
+    "severity": 1
+  },
+  "direction": "to_server",
+  "flow": {
+    "pkts_toserver": 1,
+    "pkts_toclient": 0,
+    "bytes_toserver": 98,
+    "bytes_toclient": 0,
+    "start": "2025-06-09T08:18:51.697003+0200",
+    "src_ip": "192.168.56.5",
+    "dest_ip": "192.168.56.7"
+  }
+}
+2025-06-09 08:18:51,722 - responder - INFO - IP 192.168.56.5 marcada para bloqueo por actividad maliciosa: ICMP Ping (Severidad: 1)
+2025-06-09 08:18:51,722 - responder - INFO - Evaluando bloqueo para 192.168.56.5: categoria=Ping ICMP detectado, gravedad=1, should_block=True
+2025-06-09 08:18:51,781 - responder - INFO - La IP 192.168.56.5 ya estaba bloqueada en iptables
+2025-06-09 08:18:51,909 - responder - INFO - Alerta guardada en la base de datos: 290
+2025-06-09 08:18:51,978 - responder - INFO - Alerta procesada: ICMP Ping | Src: 192.168.56.5 | Dest: 192.168.56.7 | Severidad: 1 | Acción: IP ya bloqueada: 192.168.56.5
+2025-06-09 08:18:52,721 - responder - INFO - Archivo modificado: /var/log/suricata/eve.json
+2025-06-09 08:18:52,726 - responder - INFO - Procesando nueva alerta: ICMP Ping
+2025-06-09 08:18:52,728 - responder - INFO - Procesando alerta: {
+  "timestamp": "2025-06-09T08:18:52.700896+0200",
+  "flow_id": 1023280603607199,
+  "in_iface": "eth0",
+  "event_type": "alert",
+  "src_ip": "192.168.56.5",
+  "dest_ip": "192.168.56.7",
+  "proto": "ICMP",
+  "icmp_type": 8,
+  "icmp_code": 0,
+  "pkt_src": "wire/pcap",
+  "alert": {
+    "action": "allowed",
+    "gid": 1,
+    "signature_id": 1000009,
+    "rev": 2,
+    "signature": "ICMP Ping",
+    "category": "Detection of a Network Scan",
+    "severity": 1
+  },
+  "direction": "to_server",
+  "flow": {
+    "pkts_toserver": 2,
+    "pkts_toclient": 0,
+    "bytes_toserver": 196,
+    "bytes_toclient": 0,
+    "start": "2025-06-09T08:18:51.697003+0200",
+    "src_ip": "192.168.56.5",
+    "dest_ip": "192.168.56.7"
+  }
+}
+2025-06-09 08:18:52,729 - responder - INFO - IP 192.168.56.5 marcada para bloqueo por actividad maliciosa: ICMP Ping (Severidad: 1)
+2025-06-09 08:18:52,729 - responder - INFO - Evaluando bloqueo para 192.168.56.5: categoria=Ping ICMP detectado, gravedad=1, should_block=True
+2025-06-09 08:18:52,761 - responder - INFO - La IP 192.168.56.5 ya estaba bloqueada en iptables
+2025-06-09 08:18:52,900 - responder - INFO - Alerta guardada en la base de datos: 291
+2025-06-09 08:18:52,933 - responder - INFO - Alerta procesada: ICMP Ping | Src: 192.168.56.5 | Dest: 192.168.56.7 | Severidad: 1 | Acción: IP ya bloqueada: 192.168.56.5
+2025-06-09 08:18:53,734 - responder - INFO - Archivo modificado: /var/log/suricata/eve.json
+2025-06-09 08:18:53,735 - responder - INFO - Procesando nueva alerta: ICMP Ping
+2025-06-09 08:18:53,739 - responder - INFO - Procesando alerta: {
+  "timestamp": "2025-06-09T08:18:53.725177+0200",
+  "flow_id": 1023280603607199,
+  "in_iface": "eth0",
+  "event_type": "alert",
+  "src_ip": "192.168.56.5",
+  "dest_ip": "192.168.56.7",
+  "proto": "ICMP",
+  "icmp_type": 8,
+  "icmp_code": 0,
+  "pkt_src": "wire/pcap",
+  "alert": {
+    "action": "allowed",
+    "gid": 1,
+    "signature_id": 1000009,
+    "rev": 2,
+    "signature": "ICMP Ping",
+    "category": "Detection of a Network Scan",
+    "severity": 1
+  },
+  "direction": "to_server",
+  "flow": {
+    "pkts_toserver": 3,
+    "pkts_toclient": 0,
+    "bytes_toserver": 294,
+    "bytes_toclient": 0,
+    "start": "2025-06-09T08:18:51.697003+0200",
+    "src_ip": "192.168.56.5",
+    "dest_ip": "192.168.56.7"
+  }
+}
+2025-06-09 08:18:53,740 - responder - INFO - IP 192.168.56.5 marcada para bloqueo por actividad maliciosa: ICMP Ping (Severidad: 1)
+2025-06-09 08:18:53,740 - responder - INFO - Evaluando bloqueo para 192.168.56.5: categoria=Ping ICMP detectado, gravedad=1, should_block=True
+2025-06-09 08:18:53,781 - responder - INFO - La IP 192.168.56.5 ya estaba bloqueada en iptables
+2025-06-09 08:18:53,937 - responder - INFO - Alerta guardada en la base de datos: 292
+2025-06-09 08:18:53,967 - responder - INFO - Alerta procesada: ICMP Ping | Src: 192.168.56.5 | Dest: 192.168.56.7 | Severidad: 1 | Acción: IP ya bloqueada: 192.168.56.5
+2025-06-09 08:18:54,776 - responder - INFO - Archivo modificado: /var/log/suricata/eve.json
+2025-06-09 08:18:54,783 - responder - INFO - Procesando nueva alerta: ICMP Ping
+2025-06-09 08:18:54,783 - responder - INFO - Procesando alerta: {
+  "timestamp": "2025-06-09T08:18:54.750263+0200",
+  "flow_id": 1023280603607199,
+  "in_iface": "eth0",
+  "event_type": "alert",
+  "src_ip": "192.168.56.5",
+  "dest_ip": "192.168.56.7",
+  "proto": "ICMP",
+  "icmp_type": 8,
+  "icmp_code": 0,
+  "pkt_src": "wire/pcap",
+  "alert": {
+    "action": "allowed",
+    "gid": 1,
+    "signature_id": 1000009,
+    "rev": 2,
+    "signature": "ICMP Ping",
+    "category": "Detection of a Network Scan",
+    "severity": 1
+  },
+  "direction": "to_server",
+  "flow": {
+    "pkts_toserver": 4,
+    "pkts_toclient": 0,
+    "bytes_toserver": 392,
+    "bytes_toclient": 0,
+    "start": "2025-06-09T08:18:51.697003+0200",
+    "src_ip": "192.168.56.5",
+    "dest_ip": "192.168.56.7"
+  }
+}
+2025-06-09 08:18:54,783 - responder - INFO - IP 192.168.56.5 marcada para bloqueo por actividad maliciosa: ICMP Ping (Severidad: 1)
+2025-06-09 08:18:54,784 - responder - INFO - Evaluando bloqueo para 192.168.56.5: categoria=Ping ICMP detectado, gravedad=1, should_block=True
+2025-06-09 08:18:54,807 - responder - INFO - La IP 192.168.56.5 ya estaba bloqueada en iptables
+2025-06-09 08:18:54,923 - responder - INFO - Alerta guardada en la base de datos: 293
+2025-06-09 08:18:54,949 - responder - INFO - Alerta procesada: ICMP Ping | Src: 192.168.56.5 | Dest: 192.168.56.7 | Severidad: 1 | Acción: IP ya bloqueada: 192.168.56.5
+2025-06-09 08:18:55,796 - responder - INFO - Archivo modificado: /var/log/suricata/eve.json
+2025-06-09 08:18:55,801 - responder - INFO - Procesando nueva alerta: ICMP Ping
+2025-06-09 08:18:55,810 - responder - INFO - Procesando alerta: {
+  "timestamp": "2025-06-09T08:18:55.776177+0200",
+  "flow_id": 1023280603607199,
+  "in_iface": "eth0",
+  "event_type": "alert",
+  "src_ip": "192.168.56.5",
+  "dest_ip": "192.168.56.7",
+  "proto": "ICMP",
+  "icmp_type": 8,
+  "icmp_code": 0,
+  "pkt_src": "wire/pcap",
+  "alert": {
+    "action": "allowed",
+    "gid": 1,
+    "signature_id": 1000009,
+    "rev": 2,
+    "signature": "ICMP Ping",
+    "category": "Detection of a Network Scan",
+    "severity": 1
+  },
+  "direction": "to_server",
+  "flow": {
+    "pkts_toserver": 5,
+    "pkts_toclient": 0,
+    "bytes_toserver": 490,
+    "bytes_toclient": 0,
+    "start": "2025-06-09T08:18:51.697003+0200",
+    "src_ip": "192.168.56.5",
+    "dest_ip": "192.168.56.7"
+  }
+}
+2025-06-09 08:18:55,822 - responder - INFO - IP 192.168.56.5 marcada para bloqueo por actividad maliciosa: ICMP Ping (Severidad: 1)
+2025-06-09 08:18:55,831 - responder - INFO - Evaluando bloqueo para 192.168.56.5: categoria=Ping ICMP detectado, gravedad=1, should_block=True
+2025-06-09 08:18:55,886 - responder - INFO - La IP 192.168.56.5 ya estaba bloqueada en iptables
+2025-06-09 08:18:56,003 - responder - INFO - Alerta guardada en la base de datos: 294
+2025-06-09 08:18:56,026 - responder - INFO - Alerta procesada: ICMP Ping | Src: 192.168.56.5 | Dest: 192.168.56.7 | Severidad: 1 | Acción: IP ya bloqueada: 192.168.56.5
+2025-06-09 08:20:32,471 - responder - INFO - Archivo modificado: /var/log/suricata/eve.json
+2025-06-09 08:20:32,472 - responder - INFO - Procesando nueva alerta: SSH Brute Force Attempt
+2025-06-09 08:20:32,472 - responder - INFO - Procesando alerta: {
+  "timestamp": "2025-06-09T08:20:32.445205+0200",
+  "flow_id": 223291755967429,
+  "in_iface": "eth0",
+  "event_type": "alert",
+  "src_ip": "192.168.56.5",
+  "src_port": 43223,
+  "dest_ip": "192.168.56.7",
+  "dest_port": 22,
+  "proto": "TCP",
+  "pkt_src": "wire/pcap",
+  "alert": {
+    "action": "allowed",
+    "gid": 1,
+    "signature_id": 1000001,
+    "rev": 2,
+    "signature": "SSH Brute Force Attempt",
+    "category": "Attempted Administrator Privilege Gain",
+    "severity": 3
+  },
+  "direction": "to_server",
+  "flow": {
+    "pkts_toserver": 1,
+    "pkts_toclient": 0,
+    "bytes_toserver": 60,
+    "bytes_toclient": 0,
+    "start": "2025-06-09T08:20:32.445205+0200",
+    "src_ip": "192.168.56.5",
+    "dest_ip": "192.168.56.7",
+    "src_port": 43223,
+    "dest_port": 22
+  }
+}
+2025-06-09 08:20:32,473 - responder - INFO - IP 192.168.56.5 marcada para bloqueo por actividad maliciosa: SSH Brute Force Attempt (Severidad: 3)
+2025-06-09 08:20:32,478 - responder - INFO - Evaluando bloqueo para 192.168.56.5: categoria=Intento de fuerza bruta SSH, gravedad=3, should_block=True
+2025-06-09 08:20:32,518 - responder - INFO - La IP 192.168.56.5 ya estaba bloqueada en iptables
+2025-06-09 08:20:32,616 - responder - INFO - Alerta guardada en la base de datos: 295
+2025-06-09 08:20:32,670 - responder - INFO - Alerta procesada: SSH Brute Force Attempt | Src: 192.168.56.5 | Dest: 192.168.56.7 | Severidad: 3 | Acción: IP ya bloqueada: 192.168.56.5
+2025-06-09 08:20:33,567 - responder - INFO - Archivo modificado: /var/log/suricata/eve.json
+2025-06-09 08:20:33,573 - responder - INFO - Procesando nueva alerta: SSH Brute Force Attempt
+2025-06-09 08:20:33,573 - responder - INFO - Procesando alerta: {
+  "timestamp": "2025-06-09T08:20:33.544425+0200",
+  "flow_id": 367965655025866,
+  "in_iface": "eth0",
+  "event_type": "alert",
+  "src_ip": "192.168.56.5",
+  "src_port": 43225,
+  "dest_ip": "192.168.56.7",
+  "dest_port": 22,
+  "proto": "TCP",
+  "pkt_src": "wire/pcap",
+  "alert": {
+    "action": "allowed",
+    "gid": 1,
+    "signature_id": 1000001,
+    "rev": 2,
+    "signature": "SSH Brute Force Attempt",
+    "category": "Attempted Administrator Privilege Gain",
+    "severity": 3
+  },
+  "direction": "to_server",
+  "flow": {
+    "pkts_toserver": 1,
+    "pkts_toclient": 0,
+    "bytes_toserver": 60,
+    "bytes_toclient": 0,
+    "start": "2025-06-09T08:20:33.544425+0200",
+    "src_ip": "192.168.56.5",
+    "dest_ip": "192.168.56.7",
+    "src_port": 43225,
+    "dest_port": 22
+  }
+}
+2025-06-09 08:20:33,578 - responder - INFO - IP 192.168.56.5 marcada para bloqueo por actividad maliciosa: SSH Brute Force Attempt (Severidad: 3)
+2025-06-09 08:20:33,588 - responder - INFO - Evaluando bloqueo para 192.168.56.5: categoria=Intento de fuerza bruta SSH, gravedad=3, should_block=True
+2025-06-09 08:20:33,609 - responder - INFO - La IP 192.168.56.5 ya estaba bloqueada en iptables
+2025-06-09 08:20:33,710 - responder - INFO - Alerta guardada en la base de datos: 296
+2025-06-09 08:20:33,740 - responder - INFO - Alerta procesada: SSH Brute Force Attempt | Src: 192.168.56.5 | Dest: 192.168.56.7 | Severidad: 3 | Acción: IP ya bloqueada: 192.168.56.5
+2025-06-09 08:24:42,114 - responder - INFO - Base de datos inicializada en /app/database/alerts.db
+2025-06-09 08:24:42,115 - responder - INFO - Iniciando monitoreo de eventos nuevos (desde 2025-06-09T08:24:42.115411)
+2025-06-09 08:24:42,115 - responder - INFO - Monitoreando archivo: /var/log/suricata/eve.json
+2025-06-09 08:24:42,115 - responder - INFO - Posición inicial del archivo: 7058
+2025-06-09 08:24:42,117 - responder - INFO - Observer iniciado: vigilando /var/log/suricata/eve.json
+2025-06-09 08:24:42,118 - responder - INFO - Servidor Flask iniciado en el puerto 5000
+2025-06-09 08:24:42,141 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-06-09 08:24:42,141 - werkzeug - INFO -  * Running on http://10.0.2.15:5000/ (Press CTRL+C to quit)
