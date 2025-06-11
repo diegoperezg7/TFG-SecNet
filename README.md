@@ -10,8 +10,36 @@ SecNet permite detectar tráfico malicioso en tiempo real utilizando **Suricata*
 
 ---
 
+## 📸 Capturas de Pantalla
+
+**Dashboard principal** – métricas clave (alertas totales, de alta gravedad, IPs bloqueadas, últimas 24h) + gráficas de distribución de tipos y gravedad
+
 ![Captura de pantalla 2025-06-07 102039](https://github.com/user-attachments/assets/6916ddce-7a1e-4c9d-b266-9e139544efc1)
+
+**IPs Bloqueadas y Alertas Recientes** – continuación del dashboard para actuar de forma priorizada
+
+![Captura de pantalla 2025-06-11 110600](https://github.com/user-attachments/assets/b60c0512-a487-4dca-8dd7-60ec2a90a41d)
+
+**Listado de Alertas** – tabla filtrable por fecha, severidad, protocolo; acciones ver / bloquear
+
 ![Captura de pantalla 2025-06-07 102156](https://github.com/user-attachments/assets/6411225b-4565-43da-a42f-05c79157a3d8)
+
+**Detalles Alerta Gravedad 3** – intento de fuerza bruta SSH bloqueado al instante
+
+![Captura de pantalla 2025-06-11 110344](https://github.com/user-attachments/assets/fb773c7f-893e-4d26-ab22-753153a2e819)
+
+**Detalles Alerta Gravedad 2** – escaneo SYN hacia HTTP detectado
+
+![Captura de pantalla 2025-06-11 110217](https://github.com/user-attachments/assets/58c1cea7-4039-478e-84e7-23d9f33b6b1d)
+
+**Detalles Alerta Gravedad 1** – ICMP benigno/ruidoso
+
+![Captura de pantalla 2025-06-11 110035](https://github.com/user-attachments/assets/f386d9ed-84af-4c8c-8b49-9ce696d44dcc)
+
+**Datos Completo en JSON** – datos crudos de Suricata (flow_id, payload, SID, etc.) para análisis forense
+
+![Captura de pantalla 2025-06-11 110359](https://github.com/user-attachments/assets/87f1d9b9-ef38-4a60-bb46-774f4e3f399a)
+
 
 ---
 
