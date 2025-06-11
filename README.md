@@ -40,6 +40,19 @@ SecNet permite detectar tráfico malicioso en tiempo real utilizando **Suricata*
 
 ![Captura de pantalla 2025-06-11 110359](https://github.com/user-attachments/assets/87f1d9b9-ef38-4a60-bb46-774f4e3f399a)
 
+---
+
+## 🛑 Tabla de Severidad de Alertas
+
+La severidad de cada alerta ayuda a priorizar la respuesta y el análisis. Los niveles son:
+
+| Severidad/Gravedad                   | Nivel | Descripción                                                                                                                                   |
+|--------------------------------------|-------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| 🔴 Alta (Crítico)                    | 3     | Indica amenazas graves que requieren acción inmediata, ya que pueden comprometer la seguridad del sistema o la integridad de la red. <br>Ejemplos:<br>• SSH Brute Force Attempt<br>• SMB Enumeration Attempt<br>• Telnet Connection Attempt |
+| 🟡 Media (Advertencia)               | 2     | Señales de actividad sospechosa o intentos de reconocimiento. Deben ser monitorizadas y pueden requerir intervención si se repiten.<br>Ejemplos:<br>• Nmap HTTP Scan<br>• High DNS Query Volume<br>• SSL/TLS Connection Attempt<br>• MS-SQL Connection Attempt<br>• MySQL Connection Attempt<br>• SMTP Connection Attempt<br>• SYN Scan to HTTP port |
+| 🟢 Baja (Informativo)                | 1     | Actividad generalmente legítima o de bajo riesgo, útil para contexto o análisis de patrones. No requiere acción inmediata.<br>Ejemplo:<br>• ICMP Ping (Network Scan) |
+
+> La clasificación automática de eventos permite una reacción eficiente y minimiza los falsos positivos.
 
 ---
 
