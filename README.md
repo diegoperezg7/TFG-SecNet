@@ -137,13 +137,13 @@ Demostrar cómo una solución basada en código abierto puede ofrecer detección
 
 ---
 
-📝 Licencia
+## 📝 Licencia
 
 Este proyecto está bajo la Licencia MIT - consulta el archivo LICENSE para más detalles.
 
 ---
 
-📫 Contacto
+## 📫 Contacto
 
 Diego Pérez García - @diegoperezg7
 
