@@ -1,6 +1,6 @@
 # 🔐 SecNet: Automated Incident Response & Forensic Analysis System
 
-**SecNet** is a comprehensive automated system for network security incident detection, response, and forensic analysis. Developed as a Final Project (TFG) for the Advanced Technician in Network Systems Administration (ASIR), it demonstrates how an open-source-based solution can provide active protection and forensic visibility in controlled or educational environments with limited resources.
+**SecNet** is a comprehensive automated system for network security incident detection, response, and forensic analysis. Developed as a Final Project (TFG) for the Higher Technician in Computer Network Systems Management (ASIR), it demonstrates how an open-source-based solution can provide active protection and forensic visibility in controlled or educational environments with limited resources. Final grade 10/10.
 
 ---
 
