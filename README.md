@@ -1,85 +1,155 @@
-# 🔐 SecNet: Automated Incident Response & Forensic Analysis System
+# SecNet
 
-**SecNet** is a comprehensive automated system for network security incident detection, response, and forensic analysis. Developed as a Final Project (TFG) for the Higher Technician in Computer Network Systems Management (ASIR), it demonstrates how an open-source-based solution can provide active protection and forensic visibility in controlled or educational environments with limited resources. Final grade 10/10.
+**Automated Network Incident Detection and Response System**
 
----
-
-## 🧠 Overview
-
-SecNet enables real-time detection of malicious traffic using **Suricata** as the IDS/IPS engine, automates incident response with Python scripts, and facilitates basic forensic analysis through an intuitive web interface. The entire system runs inside **Docker** containers, making it easy to deploy and portable.
+SecNet is a containerized security platform that combines real-time network threat detection (Suricata IDS/IPS), automated incident response with IP blocking, and forensic alert analysis through a unified web dashboard. Built as a final degree project for the ASIR program (Administracion de Sistemas Informaticos en Red), graded 10/10.
 
 ---
 
-## 📸 Screenshots
+## Architecture
 
-**Main Dashboard** – Key metrics (total alerts, high severity, blocked IPs, last 24h) + graphs showing alert types and severity distribution
+```mermaid
+flowchart LR
+    NET[Network Traffic] --> SUR[Suricata IDS/IPS]
+    SUR -->|EVE JSON Alerts| PYR[Python Responder]
+    PYR -->|Classified Alerts| DB[(SQLite3)]
+    PYR -->|Block Rules| IPT[iptables / nftables]
+    IPT -.->|Packet Filtering| NET
+    DB --> WEB[Web Dashboard]
+    WEB -->|Manual Block/Unblock| PYR
 
-![Captura de pantalla 2025-06-07 102039](https://github.com/user-attachments/assets/6916ddce-7a1e-4c9d-b266-9e139544efc1)
-
-**Blocked IPs and Recent Alerts** – Dashboard extension for prioritized action
-
-![Captura de pantalla 2025-06-11 110600](https://github.com/user-attachments/assets/b60c0512-a487-4dca-8dd7-60ec2a90a41d)
-
-**Alert List** – Filterable table by date, severity, protocol; actions for view/block
-
-![Captura de pantalla 2025-06-07 102156](https://github.com/user-attachments/assets/6411225b-4565-43da-a42f-05c79157a3d8)
-
-**Severity 3 Alert Details** – SSH brute-force attempt blocked instantly
-
-![Captura de pantalla 2025-06-11 110344](https://github.com/user-attachments/assets/fb773c7f-893e-4d26-ab22-753153a2e819)
-
-**Severity 2 Alert Details** – SYN scan to HTTP detected
-
-![Captura de pantalla 2025-06-11 110217](https://github.com/user-attachments/assets/58c1cea7-4039-478e-84e7-23d9f33b6b1d)
-
-**Severity 1 Alert Details** – Benign/noisy ICMP
-
-![Captura de pantalla 2025-06-11 110035](https://github.com/user-attachments/assets/f386d9ed-84af-4c8c-8b49-9ce696d44dcc)
-
-**Raw JSON Data** – Suricata raw logs (flow_id, payload, SID, etc.) for forensic review
-
-![Captura de pantalla 2025-06-11 110359](https://github.com/user-attachments/assets/87f1d9b9-ef38-4a60-bb46-774f4e3f399a)
+    style SUR fill:#1a1a2e,stroke:#0f3460,color:#e94560
+    style PYR fill:#1a1a2e,stroke:#0f3460,color:#16c79a
+    style WEB fill:#1a1a2e,stroke:#0f3460,color:#11999e
+    style DB fill:#1a1a2e,stroke:#0f3460,color:#e2e2e2
+    style IPT fill:#1a1a2e,stroke:#0f3460,color:#f58840
+```
 
 ---
 
-## 🛑 Alert Severity Table
+## Key Features
 
-The severity of each alert helps prioritize incident response and analysis. The levels are:
+**Threat Detection** -- Suricata 7.0+ engine with 11 custom detection rules monitoring network traffic in real time. Alerts are parsed from EVE JSON logs and classified by severity.
 
-| Severity Level                     | Code | Description                                                                                                                        |
-|-----------------------------------|------|------------------------------------------------------------------------------------------------------------------------------------|
-| 🔴 High (Critical)                | 3    | Indicates serious threats that require immediate action, as they can compromise system security or network integrity. <br>Examples:<br>• SSH Brute Force Attempt<br>• SMB Enumeration Attempt<br>• Telnet Connection Attempt |
-| 🟡 Medium (Warning)               | 2    | Signs of suspicious activity or reconnaissance attempts. Should be monitored and may require action if repeated.<br>Examples:<br>• Nmap HTTP Scan<br>• High DNS Query Volume<br>• SSL/TLS Connection Attempt<br>• MS-SQL Connection Attempt<br>• MySQL Connection Attempt<br>• SMTP Connection Attempt<br>• SYN Scan to HTTP port |
-| 🟢 Low (Informational)            | 1    | Generally legitimate or low-risk activity, useful for context or pattern analysis. No immediate action required.<br>Example:<br>• ICMP Ping (Network Scan) |
+**Automated Response** -- Detected threats trigger automatic IP blocking via iptables/nftables. No manual intervention required for critical and high-severity incidents. Manual override available through the dashboard.
 
-> The automatic event classification enables efficient reaction and reduces false positives.
+**Forensic Analysis** -- Each alert stores full packet metadata: source/destination IPs, ports, protocol, timestamp, rule signature, and severity. Detailed forensic view available per alert.
+
+**Dashboard and Visualization** -- Dark-themed responsive web interface with real-time alert feed, severity filtering, blocked IP management, and Chart.js visualizations for alert trends and distribution.
 
 ---
 
-## ⚙️ Project Architecture
+## Alert Classification
 
-- 📁 **suricata/**: IDS/IPS configuration and custom rules
-- 📁 **python-responder/**: Automated response script
-- 📁 **logs/**: Logs generated by Suricata (`eve.json`, `suricata.log`)
-- 📁 **database/**: SQLite database with processed alerts
-- 📁 **web-interface/**: Web UI to visualize and manage alerts
-- `docker-compose.yml`: Full orchestration using Docker
-
----
-
-## 🚀 Main Components
-
-- **Suricata**: IDS/IPS engine that detects and blocks malicious traffic (af-packet mode)
-- **Responder.py**: Python script that parses logs (`eve.json`), stores alerts in SQLite and triggers automatic responses (e.g., blocking IPs)
-- **Web Interface (PHP + JS)**: Allows real-time visualization and management of alerts
-- **Docker**: Enables portable and reproducible deployment
+| Severity | Level | Examples |
+|---|---|---|
+| Critical | 1 | Active exploitation attempts, known CVE signatures |
+| High | 2 | Brute force attacks, port scan sweeps |
+| Medium | 3 | Suspicious protocol usage, unusual traffic patterns |
+| Low | 4 | Policy violations, informational probes |
+| Informational | 5 | DNS queries to flagged domains, connection metadata |
 
 ---
 
-## 📦 Requirements
+## Tech Stack
 
-- Docker and Docker Compose installed
-- Linux OS (recommended: Kali, Debian, or Ubuntu)
-- Active network interface (default is `eth0`, configurable in `suricata.yaml`)
-- Python 3.8+, PHP 7.4+, Suricata, SQLite3, iptables
+| Component | Technology | Role |
+|---|---|---|
+| IDS/IPS Engine | Suricata 7.0+ | Network traffic analysis and rule-based detection |
+| API / Automation | Python 3.9, Flask | Alert processing, automated response, REST API |
+| Dashboard | PHP, Apache | Web interface, alert visualization |
+| Database | SQLite3 | Alert and blocked IP storage |
+| Visualization | Chart.js | Alert trend charts and severity distribution |
+| Packet Filtering | iptables / nftables | Automated and manual IP blocking |
+| Infrastructure | Docker, Docker Compose | Containerization, orchestration, health checks |
 
+---
+
+## Screenshots
+
+| Dashboard | Alert Detail |
+|---|---|
+| <!-- docs/screenshots/dashboard.png --> | <!-- docs/screenshots/alert-detail.png --> |
+
+| Real-Time Alerts | Blocked IPs |
+|---|---|
+| <!-- docs/screenshots/alerts.png --> | <!-- docs/screenshots/blocked-ips.png --> |
+
+---
+
+## Quick Start
+
+```bash
+git clone https://github.com/diegoperezg7/TFG-SecNet.git
+cd TFG-SecNet
+docker compose up -d
+```
+
+The dashboard is available at `http://localhost:8080`. The Flask API runs on port `5000`.
+
+To monitor a specific network interface, edit `suricata/suricata.yaml` before starting the containers.
+
+---
+
+## Architecture Details
+
+SecNet runs as a three-container system orchestrated with Docker Compose:
+
+**Container 1 -- Suricata** operates in IDS/IPS mode, inspecting network traffic against 11 custom rules plus the default ruleset. Alerts are written to EVE JSON logs shared with the Python Responder via a Docker volume.
+
+**Container 2 -- Python Responder** runs a Flask API that continuously parses Suricata's EVE logs, classifies alerts by severity, stores them in SQLite, and executes automated IP blocking for threats above the configured threshold.
+
+**Container 3 -- Web Interface** serves a PHP dashboard on Apache that consumes the Flask API. Provides real-time alert monitoring, forensic detail views, severity filtering, and blocked IP management.
+
+All three containers communicate over an internal Docker network. Health checks ensure automatic restart on failure.
+
+---
+
+## Custom Detection Rules
+
+11 custom Suricata rules covering:
+
+- **Port scanning** -- SYN scan detection, sequential port probing
+- **Brute force** -- SSH and HTTP authentication flood detection
+- **Suspicious protocols** -- IRC, Telnet, non-standard protocol usage
+- **Known attack patterns** -- SQL injection signatures, directory traversal
+- **Exfiltration indicators** -- Large outbound transfers, DNS tunneling patterns
+
+Rules are defined in `suricata/rules/custom.rules` and can be extended without rebuilding the container.
+
+---
+
+## Repository Structure
+
+```
+TFG-SecNet/
+├── docker-compose.yml
+├── suricata/
+│   ├── Dockerfile
+│   ├── suricata.yaml
+│   └── rules/
+│       └── custom.rules
+├── python-responder/
+│   ├── Dockerfile
+│   ├── responder.py
+│   └── requirements.txt
+├── web-interface/
+│   ├── Dockerfile
+│   ├── index.php
+│   ├── api/
+│   ├── css/
+│   └── js/
+└── README.md
+```
+
+---
+
+## Academic Context
+
+Developed as the final degree project (Trabajo de Fin de Grado) for the Tecnico Superior en Administracion de Sistemas Informaticos en Red (ASIR) program. Graded 10/10.
+
+---
+
+## License
+
+MIT License. See [LICENSE](LICENSE) for details.
