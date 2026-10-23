@@ -1,158 +1,154 @@
-# SecNet
+<p align="center">
+  <img src="docs/banner.svg" alt="SecNet" width="100%">
+</p>
 
-**Automated Network Incident Detection and Response System**
+<p align="center">
+  <img alt="Suricata" src="https://img.shields.io/badge/Suricata-IDS-EF3B2D">
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.9-3776AB?logo=python&logoColor=white">
+  <img alt="Flask" src="https://img.shields.io/badge/Flask-2.0-000000?logo=flask&logoColor=white">
+  <img alt="PHP" src="https://img.shields.io/badge/PHP-7.4-777BB4?logo=php&logoColor=white">
+  <img alt="SQLite" src="https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white">
+  <img alt="nftables" src="https://img.shields.io/badge/nftables%20%2F%20iptables-firewall-4B5563">
+  <img alt="Docker" src="https://img.shields.io/badge/Docker%20Compose-2496ED?logo=docker&logoColor=white">
+</p>
 
-SecNet is a containerized security platform that combines real-time network threat detection (Suricata IDS/IPS), automated incident response with IP blocking, and forensic alert analysis through a unified web dashboard. Built as a final degree project for the ASIR program (Administracion de Sistemas Informaticos en Red), graded 10/10.
+<p align="center"><b>Detects hostile traffic with Suricata, blocks the source automatically in the host firewall and keeps a forensic trail you can browse from a dashboard.</b></p>
 
----
+SecNet is my final degree project for the ASIR program (Network Systems Administration), graded 10/10. Three containers cooperate: Suricata inspects the traffic on the host interface, a Python responder tails Suricata's EVE JSON log, classifies each alert, stores it in SQLite and blocks offending IPs with nftables (falling back to iptables), and a PHP dashboard reads the same database to show alerts, trends and blocked IPs.
+
+![Dashboard: totals, alert types, severity distribution](docs/screenshots/dashboard.png)
+
+## Screenshots
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/alerts.png" alt="Alert list"><br><sub><b>Alerts</b>: every Suricata alert with source, destination, protocol and severity.</sub></td>
+    <td width="50%"><img src="docs/screenshots/alert-detail.png" alt="Alert detail"><br><sub><b>Forensic detail</b>: one alert with ports, the raw EVE record and the history of the source IP.</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/blocked-ips.png" alt="Blocked IPs"><br><sub><b>Blocked IPs</b>: when and why each address was blocked, and how many alerts it produced.</sub></td>
+    <td width="50%">Screenshots come from the real web container running against a demo database: alerts generated from the project's own 11 rules, with source IPs from a lab range (192.168.56.0/24) and the RFC 5737 documentation ranges. The interface is in Spanish; 1440x900.</td>
+  </tr>
+</table>
 
 ## Architecture
 
 ```mermaid
 flowchart LR
-    NET[Network Traffic] --> SUR[Suricata IDS/IPS]
-    SUR -->|EVE JSON Alerts| PYR[Python Responder]
-    PYR -->|Classified Alerts| DB[(SQLite3)]
-    PYR -->|Block Rules| IPT[iptables / nftables]
-    IPT -.->|Packet Filtering| NET
-    DB --> WEB[Web Dashboard]
-    WEB -->|Manual Block/Unblock| PYR
+    NET["Traffic on eth0"] --> SUR
 
-    style SUR fill:#1a1a2e,stroke:#0f3460,color:#e94560
-    style PYR fill:#1a1a2e,stroke:#0f3460,color:#16c79a
-    style WEB fill:#1a1a2e,stroke:#0f3460,color:#11999e
-    style DB fill:#1a1a2e,stroke:#0f3460,color:#e2e2e2
-    style IPT fill:#1a1a2e,stroke:#0f3460,color:#f58840
+    subgraph Host["Host network namespace"]
+        SUR["Suricata<br/>11 local rules"]
+        EVE[("eve.json")]
+        RES["Python responder<br/>EVE tailer + Flask API :5000"]
+        FW["nftables set<br/>(iptables fallback)"]
+    end
+
+    subgraph Bridge["incident-network (bridge)"]
+        WEB["PHP dashboard<br/>Apache :8080"]
+    end
+
+    DB[("SQLite<br/>alerts, blocked_ips")]
+
+    SUR -->|EVE JSON| EVE
+    EVE -->|watchdog| RES
+    RES -->|classify and store| DB
+    RES -->|block severity 2-3| FW
+    FW -.->|drop| NET
+    DB -->|shared volume| WEB
 ```
 
----
+- **Suricata** and the **responder** share the host network namespace: Suricata needs the real interface, and the responder needs `NET_ADMIN` to change the host firewall.
+- The responder watches `eve.json` with `watchdog`, parses each alert, stores it and decides whether to block.
+- The **dashboard** runs on its own bridge network and reads the SQLite file through a shared volume, so it never needs write access to the firewall.
 
-## Key Features
+## Alert classification
 
-**Threat Detection** -- Suricata 7.0+ engine with 11 custom detection rules monitoring network traffic in real time. Alerts are parsed from EVE JSON logs and classified by severity.
+The severity is Suricata's rule `priority`, mapped to three levels:
 
-**Automated Response** -- Detected threats trigger automatic IP blocking via iptables/nftables. No manual intervention required for critical and high-severity incidents. Manual override available through the dashboard.
-
-**Forensic Analysis** -- Each alert stores full packet metadata: source/destination IPs, ports, protocol, timestamp, rule signature, and severity. Detailed forensic view available per alert.
-
-**Dashboard and Visualization** -- Dark-themed responsive web interface with real-time alert feed, severity filtering, blocked IP management, and Chart.js visualizations for alert trends and distribution.
-
----
-
-## Alert Classification
-
-| Severity | Level | Examples |
+| Severity | Meaning in the responder | Response |
 |---|---|---|
-| Critical | 1 | Active exploitation attempts, known CVE signatures |
-| High | 2 | Brute force attacks, port scan sweeps |
-| Medium | 3 | Suspicious protocol usage, unusual traffic patterns |
-| Low | 4 | Policy violations, informational probes |
-| Informational | 5 | DNS queries to flagged domains, connection metadata |
+| **3** High | `Amenaza de alta gravedad` (high-severity threat) | Source IP blocked |
+| **2** Medium | `Actividad sospechosa` (suspicious activity) | Source IP blocked |
+| **1** Low | `Actividad de red normal` (normal network activity) | Logged |
 
----
+Independently of the level, SSH brute force, port scans (including the SYN scan rule) and ICMP ping sweeps always lead to a block. Localhost and self-traffic are never blocked.
 
-## Tech Stack
+## Detection rules
 
-| Component | Technology | Role |
+The 11 rules in [`suricata/rules/local.rules`](suricata/rules/local.rules):
+
+| Rule | Port | Priority |
 |---|---|---|
-| IDS/IPS Engine | Suricata 7.0+ | Network traffic analysis and rule-based detection |
-| API / Automation | Python 3.9, Flask | Alert processing, automated response, REST API |
-| Dashboard | PHP, Apache | Web interface, alert visualization |
-| Database | SQLite3 | Alert and blocked IP storage |
-| Visualization | Chart.js | Alert trend charts and severity distribution |
-| Packet Filtering | iptables / nftables | Automated and manual IP blocking |
-| Infrastructure | Docker, Docker Compose | Containerization, orchestration, health checks |
+| SSH Brute Force Attempt | 22/tcp | 3 |
+| SMB Enumeration Attempt | 445/tcp | 3 |
+| Telnet Connection Attempt | 23/tcp | 3 |
+| Nmap HTTP Scan | 80/tcp | 2 |
+| SYN Scan to HTTP port | 80/tcp | 2 |
+| High DNS Query Volume | 53/udp | 2 |
+| SSL/TLS Connection Attempt | TLS | 2 |
+| MS-SQL Connection Attempt | 1433/tcp | 2 |
+| MySQL Connection Attempt | 3306/tcp | 2 |
+| SMTP Connection Attempt | 25/tcp | 2 |
+| ICMP Ping | ICMP | 1 |
 
----
+## Key engineering decisions
 
-## Screenshots
+- **IDS and response decoupled through a log.** Suricata only writes EVE JSON; the responder consumes it. Either side can be restarted or replaced without touching the other.
+- **nftables first, iptables as a fallback.** Blocks are added to an nftables set (one rule, many addresses) and the ruleset is saved so it survives restarts; on hosts without nftables the responder inserts iptables `DROP` rules instead.
+- **Idempotent blocking.** Before blocking, the responder checks both the firewall and the database, so repeated alerts from the same source do not pile up duplicate rules.
+- **One SQLite file as the contract.** The responder writes, the dashboard reads; WAL mode keeps reads from blocking the writer.
+- **Least privilege where possible.** Only the responder is privileged; the dashboard runs unprivileged on a separate network.
 
-| Dashboard | Alert Detail |
-|---|---|
-| <!-- docs/screenshots/dashboard.png --> | <!-- docs/screenshots/alert-detail.png --> |
+## Quickstart
 
-| Real-Time Alerts | Blocked IPs |
-|---|---|
-| <!-- docs/screenshots/alerts.png --> | <!-- docs/screenshots/blocked-ips.png --> |
-
----
-
-## Quick Start
+Requirements: a Linux host (the project was built and tested on Kali Linux) with Docker and Docker Compose, and a network interface named `eth0` or the name changed in `suricata/suricata.yaml` and `docker-compose.yml`.
 
 ```bash
 git clone https://github.com/diegoperezg7/TFG-SecNet.git
 cd TFG-SecNet
-docker compose up -d
+docker compose up -d --build
 ```
 
-The dashboard is available at `http://localhost:8080`. The Flask API runs on port `5000`.
+- Dashboard: `http://localhost:8080`
+- Responder API: `http://localhost:5000/alerts`
 
-To monitor a specific network interface, edit `suricata/suricata.yaml` before starting the containers.
+To check the pipeline without generating real attack traffic, `test_alert.py` appends a synthetic alert to the EVE log.
 
----
-
-## Architecture Details
-
-SecNet runs as a three-container system orchestrated with Docker Compose:
-
-**Container 1 -- Suricata** operates in IDS/IPS mode, inspecting network traffic against 11 custom rules plus the default ruleset. Alerts are written to EVE JSON logs shared with the Python Responder via a Docker volume.
-
-**Container 2 -- Python Responder** runs a Flask API that continuously parses Suricata's EVE logs, classifies alerts by severity, stores them in SQLite, and executes automated IP blocking for threats above the configured threshold.
-
-**Container 3 -- Web Interface** serves a PHP dashboard on Apache that consumes the Flask API. Provides real-time alert monitoring, forensic detail views, severity filtering, and blocked IP management.
-
-All three containers communicate over an internal Docker network. Health checks ensure automatic restart on failure.
-
----
-
-## Custom Detection Rules
-
-11 custom Suricata rules covering:
-
-- **Port scanning** -- SYN scan detection, sequential port probing
-- **Brute force** -- SSH and HTTP authentication flood detection
-- **Suspicious protocols** -- IRC, Telnet, non-standard protocol usage
-- **Known attack patterns** -- SQL injection signatures, directory traversal
-- **Exfiltration indicators** -- Large outbound transfers, DNS tunneling patterns
-
-Rules are defined in `suricata/rules/custom.rules` and can be extended without rebuilding the container.
-
----
-
-## Repository Structure
+## Repository structure
 
 ```
 TFG-SecNet/
 ├── docker-compose.yml
 ├── suricata/
 │   ├── Dockerfile
-│   ├── suricata.yaml
-│   └── rules/
-│       └── custom.rules
+│   ├── suricata.yaml          # af-packet on eth0, EVE JSON output
+│   └── rules/local.rules      # the 11 detection rules
 ├── python-responder/
 │   ├── Dockerfile
-│   ├── responder.py
-│   └── requirements.txt
+│   ├── responder.py           # EVE tailer, classifier, blocker, Flask API
+│   ├── init-nftables.sh       # nftables table and set bootstrap
+│   └── startup.sh
 ├── web-interface/
-│   ├── Dockerfile
-│   ├── index.php
-│   ├── api/
-│   ├── css/
-│   └── js/
-└── README.md
+│   ├── Dockerfile             # php:7.4-apache
+│   ├── index.php              # dashboard
+│   ├── alerts.php             # alert list and filters
+│   ├── alert-details.php      # forensic view
+│   ├── api/                   # JSON endpoints for the dashboard
+│   └── includes/              # config and database access
+├── database/init.sql          # schema
+├── docs/                      # banner and screenshots
+└── test_alert.py              # synthetic EVE alert
 ```
 
----
+## Known limitations
 
-## Academic Context
-
-Developed as the final degree project (Trabajo de Fin de Grado) for the Tecnico Superior en Administracion de Sistemas Informaticos en Red (ASIR) program. Graded 10/10.
-
----
-
+- Built as an academic project for a lab network; it has not been hardened for production.
+- Blocking or unblocking from the dashboard updates the shared database; the firewall itself is changed by the responder when it processes alerts.
+- Detection relies on the 11 local rules above; the default Suricata ruleset is not bundled.
 
 ## License
 
-Copyright (c) 2024-2026 Diego Perez Garcia. All rights reserved.
+Copyright (c) 2024-2026 Diego Pérez. All rights reserved.
 
-This repository is published for **portfolio and evaluation purposes only**. You may view and read the contents to evaluate the author's technical capabilities. Copying, modifying, distributing, or using any part of this codebase for any purpose is prohibited without explicit written permission. See [LICENSE](LICENSE) for full terms.
+Published for portfolio and evaluation purposes only. You may read the code to evaluate the author's work; copying, modifying, distributing or using it requires written permission. See [LICENSE](LICENSE).

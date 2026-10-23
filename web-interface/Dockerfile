@@ -1,10 +1,7 @@
 FROM php:7.4-apache
 
-# Install SQLite and PHP extensions
-RUN apt-get update && apt-get install -y \
-    sqlite3 \
-    libsqlite3-dev \
-    && docker-php-ext-install pdo pdo_sqlite
+# pdo_sqlite and sqlite3 ship with the official PHP image, so no extra
+# packages are needed (installing them from Debian bullseye now fails).
 
 # Enable Apache rewrite module
 RUN a2enmod rewrite
